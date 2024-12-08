@@ -3,7 +3,7 @@ package com.betrybe.agrix.exception;
 /**
  * The type Not found exception.
  */
-public class NotFoundException extends Exception {
+public class NotFoundException extends RuntimeException {
   /**
    * Instantiates a new Not found exception.
    *

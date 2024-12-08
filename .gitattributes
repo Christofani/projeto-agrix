@@ -1,2 +1,18 @@
-/mvnw text eol=lf
+# Tratamento geral de arquivos de texto (mantenha LF no repositório)
+* text=auto eol=lf
+
+# Configuração específica para arquivos Windows
 *.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Configuração para arquivos shell (Unix/Linux)
+*.sh text eol=lf
+
+# Força finais de linha para Dockerfiles
+Dockerfile text eol=lf
+
+# Exceção para arquivos binários (sem conversão de final de linha)
+*.jar binary
+*.png binary
+*.jpg binary
+*.pdf binary
