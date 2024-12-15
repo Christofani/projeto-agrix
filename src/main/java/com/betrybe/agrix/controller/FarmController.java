@@ -3,7 +3,7 @@ package com.betrybe.agrix.controller;
 import com.betrybe.agrix.controller.dto.*;
 import com.betrybe.agrix.entity.*;
 import com.betrybe.agrix.exception.*;
-import com.betrybe.agrix.services.*;
+import com.betrybe.agrix.service.*;
 import com.betrybe.agrix.utils.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
