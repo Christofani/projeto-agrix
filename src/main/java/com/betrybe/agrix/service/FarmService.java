@@ -1,4 +1,4 @@
-package com.betrybe.agrix.services;
+package com.betrybe.agrix.service;
 
 import com.betrybe.agrix.entity.*;
 import com.betrybe.agrix.exception.FarmNotFoundException;
