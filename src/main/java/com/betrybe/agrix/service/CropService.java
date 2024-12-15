@@ -26,11 +26,10 @@ public class CropService {
    * Instantiates a new Crop service.
    *
    * @param cropRepository the crop repository
-   * @param farmRepository the farm repository
    * @param farmService    the farm service
    */
   @Autowired
-  public CropService(CropRepository cropRepository, FarmRepository farmRepository, FarmService farmService) {
+  public CropService(CropRepository cropRepository, FarmService farmService) {
     this.cropRepository = cropRepository;
     this.farmService = farmService;
   }

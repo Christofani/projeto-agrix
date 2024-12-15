@@ -12,17 +12,17 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  app:
-    image: meu-app  # Substitua com o nome da sua imagem Docker da aplicação
-    container_name: app-container
-    depends_on:
-      - postgres
-    ports:
-      - "8080:8080"  # Se a sua aplicação usa a porta 8080, caso contrário, ajuste
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/agrixdb
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-
-volumes:
-  postgres_data:
+#  app:
+#    image: meu-app  # Substitua com o nome da sua imagem Docker da aplicação
+#    container_name: app-container
+#    depends_on:
+#      - postgres
+#    ports:
+#      - "8080:8080"  # Se a sua aplicação usa a porta 8080, caso contrário, ajuste
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/agrixdb
+#      SPRING_DATASOURCE_USERNAME: postgres
+#      SPRING_DATASOURCE_PASSWORD: postgres
+#
+#volumes:
+#  postgres_data:
