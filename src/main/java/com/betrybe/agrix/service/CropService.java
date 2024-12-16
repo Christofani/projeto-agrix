@@ -111,9 +111,7 @@ public class CropService {
   public String deleteCrop(Long id) throws CropNotFoundException {
     Crop existingCrop = cropRepository.findById(id)
             .orElseThrow(CropNotFoundException::new);
-
     cropRepository.delete(existingCrop);
-
     return MessageUtil.CROP_DELETED;
   }
 }

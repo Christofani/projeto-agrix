@@ -17,7 +17,7 @@ public record FarmDto(
    * @param farm the farm
    * @return the farm dto
    */
-  public  static FarmDto fromEntity(Farm farm) {
+  public static FarmDto fromEntity(Farm farm) {
     return new FarmDto(
             farm.getId(),
             farm.getName(),
