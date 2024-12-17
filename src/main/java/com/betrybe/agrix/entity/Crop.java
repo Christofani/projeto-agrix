@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import org.springframework.data.jpa.domain.support.*;
 
 import java.time.*;
+import java.util.*;
 
 /**
  * The type Crop.
@@ -26,6 +27,18 @@ public class Crop {
   @ManyToOne
   @JoinColumn(name = "farm_id")
   private Farm farmId;
+
+
+  @ManyToMany
+  @JoinTable(
+          name = "crop_fertilizer",
+          joinColumns = @JoinColumn(name = "crop_id"),
+          inverseJoinColumns = @JoinColumn(name ="fertilizer_id")
+  )
+  private List<Fertilizer> fertilizers;
+
+
+
 
   /**
    * Instantiates a new Crop.
@@ -131,5 +144,13 @@ public class Crop {
 
   public void setHarvestDate(LocalDate harvestDate) {
     this.harvestDate = harvestDate;
+  }
+
+  public List<Fertilizer> getFertilizers() {
+    return fertilizers;
+  }
+
+  public void setFertilizers(List<Fertilizer> fertilizers) {
+    this.fertilizers = fertilizers;
   }
 }
