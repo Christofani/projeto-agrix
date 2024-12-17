@@ -7,9 +7,11 @@ import com.betrybe.agrix.exception.*;
 import com.betrybe.agrix.service.*;
 import com.betrybe.agrix.utils.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.format.annotation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -60,6 +62,22 @@ public class CropController {
   }
 
   /**
+   * Search crops by date range list.
+   *
+   * @param start the start
+   * @param end   the end
+   * @return the list
+   */
+  @GetMapping("search")
+  public  List<CropDto> searchCropsByDateRange(
+          @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate start,
+          @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate end) {
+    return cropService.findCropsBySearchDate(start, end).stream()
+            .map(CropDto::fromEntity)
+            .collect(Collectors.toList());
+  }
+
+  /**
    * Updated crop crop dto.
    *
    * @param id   the id
@@ -73,6 +91,8 @@ public class CropController {
 
     cropToUpdate.setName(crop.name());
     cropToUpdate.setPlantedArea(crop.plantedArea());
+    cropToUpdate.setPlantedDate(crop.plantedDate());
+    cropToUpdate.setHarvestDate(crop.harvestDate());
 
     Crop updatedCrop = cropService.updatedCrop(cropToUpdate);
     return CropDto.fromEntity(updatedCrop);
