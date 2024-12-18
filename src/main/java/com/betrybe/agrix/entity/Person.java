@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import org.springframework.security.core.*;
+import org.springframework.security.core.authority.*;
 import org.springframework.security.core.userdetails.*;
 
 import java.util.*;
@@ -75,7 +76,9 @@ public class Person implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of();
+    return List.of(
+            new SimpleGrantedAuthority(role.name())
+    );
   }
 
   @Override
