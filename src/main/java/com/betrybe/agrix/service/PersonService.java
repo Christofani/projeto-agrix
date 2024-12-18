@@ -6,6 +6,8 @@ import com.betrybe.agrix.exception.*;
 import com.betrybe.agrix.repository.*;
 import com.betrybe.agrix.utils.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.security.core.userdetails.*;
+import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
@@ -14,7 +16,7 @@ import java.util.*;
  * The type Person service.
  */
 @Service
-public class PersonService {
+public class PersonService implements UserDetailsService {
   private final PersonRepository personRepository;
 
   /**
@@ -34,6 +36,10 @@ public class PersonService {
    * @return the person
    */
   public Person createPerson(Person person) {
+    String hashPassword = new BCryptPasswordEncoder()
+            .encode(person.getPassword());
+    person.setPassword(hashPassword);
+
     return personRepository.save(person);
   }
 
@@ -57,18 +63,6 @@ public class PersonService {
     return personRepository.findById(personId)
             .orElseThrow(PersonNotFoundException::new);
   }
-
-  /**
-   * Find person by username person.
-   *
-   * @param username the username
-   * @return the person
-   * @throws PersonNotFoundException the person not found exception
-   */
-  public Person findPersonByUsername(String username) throws PersonNotFoundException {
-    return personRepository.findByUsername(username)
-            .orElseThrow(PersonNotFoundException::new);
- }
 
   /**
    * Update person.
@@ -101,4 +95,9 @@ public class PersonService {
     return MessageUtil.PERSON_DELETED;
  }
 
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    return personRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException(username));
+  }
 }

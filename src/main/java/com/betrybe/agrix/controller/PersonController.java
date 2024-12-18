@@ -7,6 +7,7 @@ import com.betrybe.agrix.service.*;
 import com.betrybe.agrix.utils.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
+import org.springframework.security.access.annotation.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -31,6 +32,7 @@ public class PersonController {
   }
 
   @GetMapping
+  @Secured({"USER","MANAGER","ADMIN"})
   public List<PersonDto> findAllPersons() {
     List<Person> allPersons = personService.findAllPersons();
     return allPersons.stream().map(PersonDto::fromEntity).toList();

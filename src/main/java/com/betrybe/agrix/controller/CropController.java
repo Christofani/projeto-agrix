@@ -9,6 +9,7 @@ import com.betrybe.agrix.utils.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.format.annotation.*;
 import org.springframework.http.*;
+import org.springframework.security.access.annotation.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.*;
@@ -20,6 +21,7 @@ import java.util.stream.*;
  */
 @RestController
 @RequestMapping("/crops")
+@Secured({"MANAGER","ADMIN"})
 public class CropController {
 
   private final CropService cropService;

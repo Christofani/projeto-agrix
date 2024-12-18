@@ -9,6 +9,7 @@ import com.betrybe.agrix.service.*;
 import com.betrybe.agrix.utils.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
+import org.springframework.security.access.annotation.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -18,6 +19,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/fertilizers")
+@Secured("ADMIN")
 public class FertilizerController {
   private final FertilizerService fertilizerService;
 
