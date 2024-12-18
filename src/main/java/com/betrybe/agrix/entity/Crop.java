@@ -4,6 +4,9 @@ package com.betrybe.agrix.entity;
 import jakarta.persistence.*;
 import org.springframework.data.jpa.domain.support.*;
 
+import java.time.*;
+import java.util.*;
+
 /**
  * The type Crop.
  */
@@ -16,12 +19,26 @@ public class Crop {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  private String name;
+  private Double plantedArea;
+  private LocalDate plantedDate;
+  private LocalDate harvestDate;
+
   @ManyToOne
   @JoinColumn(name = "farm_id")
   private Farm farmId;
 
-  private String name;
-  private Double plantedArea;
+
+  @ManyToMany
+  @JoinTable(
+          name = "crop_fertilizer",
+          joinColumns = @JoinColumn(name = "crop_id"),
+          inverseJoinColumns = @JoinColumn(name ="fertilizer_id")
+  )
+  private List<Fertilizer> fertilizers;
+
+
+
 
   /**
    * Instantiates a new Crop.
@@ -34,9 +51,11 @@ public class Crop {
    * @param name        the name
    * @param plantedArea the planted area
    */
-  public Crop( String name, Double plantedArea) {
+  public Crop( String name, Double plantedArea, LocalDate plantedDate, LocalDate harvestDate ) {
     this.name = name;
     this.plantedArea = plantedArea;
+    this.plantedDate = plantedDate;
+    this.harvestDate = harvestDate;
   }
 
   /**
@@ -109,5 +128,29 @@ public class Crop {
    */
   public void setPlantedArea(Double plantedArea) {
     this.plantedArea = plantedArea;
+  }
+
+  public LocalDate getPlantedDate() {
+    return plantedDate;
+  }
+
+  public void setPlantedDate(LocalDate plantedDate) {
+    this.plantedDate = plantedDate;
+  }
+
+  public LocalDate getHarvestDate() {
+    return harvestDate;
+  }
+
+  public void setHarvestDate(LocalDate harvestDate) {
+    this.harvestDate = harvestDate;
+  }
+
+  public List<Fertilizer> getFertilizers() {
+    return fertilizers;
+  }
+
+  public void setFertilizers(List<Fertilizer> fertilizers) {
+    this.fertilizers = fertilizers;
   }
 }

@@ -53,7 +53,7 @@ public class FarmController {
    * @return the list
    */
   @GetMapping
-  public List<FarmDto> findAll() {
+  public List<FarmDto> findAllFarms() {
     List<Farm> allFarms = farmService.findAllFarms();
     return allFarms.stream()
             .map(FarmDto::fromEntity)

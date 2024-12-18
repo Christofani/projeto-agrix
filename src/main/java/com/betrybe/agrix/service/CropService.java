@@ -9,6 +9,7 @@ import com.betrybe.agrix.utils.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
+import java.time.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -86,6 +87,17 @@ public class CropService {
   }
 
   /**
+   * Find crops by search date list.
+   *
+   * @param start the start
+   * @param end   the end
+   * @return the list
+   */
+  public List<Crop> findCropsBySearchDate(LocalDate start, LocalDate end) {
+    return cropRepository.findAllByHarvestDateBetween(start, end);
+  }
+
+  /**
    * Updated crop.
    *
    * @param crop the crop
@@ -98,6 +110,8 @@ public class CropService {
 
     existingCrop.setName(crop.getName());
     existingCrop.setPlantedArea(crop.getPlantedArea());
+    existingCrop.setPlantedDate(crop.getPlantedDate());
+    existingCrop.setHarvestDate(crop.getHarvestDate());
     return cropRepository.save(existingCrop);
   }
 
@@ -111,9 +125,7 @@ public class CropService {
   public String deleteCrop(Long id) throws CropNotFoundException {
     Crop existingCrop = cropRepository.findById(id)
             .orElseThrow(CropNotFoundException::new);
-
     cropRepository.delete(existingCrop);
-
     return MessageUtil.CROP_DELETED;
   }
 }
