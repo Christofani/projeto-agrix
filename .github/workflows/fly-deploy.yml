@@ -1,0 +1,24 @@
+# See https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
+
+
+on:
+  push:
+    branches:
+      'configuracao-para-deploy'
+jobs:
+  run-testes:
+    runs-on: ubuntu-latest
+    name: Executar testes
+
+    steps:
+      - name: Baixar repositório e acessar a branch
+      - uses: actions/checkout@v3
+
+      - name: Instalar Java
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: : '17'
+
+      - name: Executar testes
+        run: mvn clean test
