@@ -1,4 +1,5 @@
 package com.betrybe.agrix.security;
+
 import com.betrybe.agrix.service.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -24,27 +25,34 @@ public class JwtFilter extends OncePerRequestFilter {
   }
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain
-  ) throws ServletException, IOException {
-    Optional<String> token = extractToken(request);
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+          throws ServletException, IOException {
+    try {
+      Optional<String> token = extractToken(request);
 
-    if (token.isPresent()) {
-      String username = tokenService.validateToken(token.get());
+      if (token.isPresent()) {
+        String username = tokenService.validateToken(token.get());
+        UserDetails userDetails = personService.loadUserByUsername(username);
 
-     UserDetails userDetails = personService.loadUserByUsername(username);
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+      }
 
-      UsernamePasswordAuthenticationToken autenticationToken =
-              new UsernamePasswordAuthenticationToken(username , null, userDetails.getAuthorities());
-      SecurityContextHolder.getContext().setAuthentication(autenticationToken);
+    } catch (RuntimeException e) {
+      // Limpa o contexto de autenticação em caso de falha
+      SecurityContextHolder.clearContext();
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      response.getWriter().write(e.getMessage());
+      return;
     }
 
     filterChain.doFilter(request, response);
-
   }
 
   private Optional<String> extractToken(HttpServletRequest request) {
     String authHeader = request.getHeader("Authorization");
-    if (authHeader == null) {
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
       return Optional.empty();
     }
     return Optional.of(authHeader.replace("Bearer ", ""));
