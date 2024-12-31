@@ -1,4 +1,4 @@
-# 🌱 Agrix - Gerenciamento de Fazendas
+# 🌱 Agrix - Gerenciamento de Fazendas(Back-end)
 
 O **Agrix** é um sistema de gerenciamento de fazendas e suas plantações, com funcionalidades que evoluíram ao longo de três fases de desenvolvimento. O projeto foi desenvolvido utilizando **Spring Boot** e **Docker**, com implementação de autenticação JWT e controle de acesso baseado em roles. A solução é projetada para auxiliar na gestão de fazendas, controle de plantações, gerenciamento de fertilizantes e usuários, com foco na escalabilidade e segurança.
 
