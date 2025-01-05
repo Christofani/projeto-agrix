@@ -1,10 +1,8 @@
 package com.betrybe.agrix.controller;
 
-
 import com.betrybe.agrix.controller.dto.*;
 import com.betrybe.agrix.entity.*;
 import com.betrybe.agrix.exception.*;
-import com.betrybe.agrix.repository.*;
 import com.betrybe.agrix.service.*;
 import com.betrybe.agrix.utils.*;
 import org.springframework.beans.factory.annotation.*;
@@ -19,31 +17,18 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/fertilizers")
-@Secured("ADMIN")
+@Secured({"USER","MANAGER","ADMIN"})
 public class FertilizerController {
   private final FertilizerService fertilizerService;
 
   /**
    * Instantiates a new Fertilizer controller.
    *
-   * @param fertilizerService    the fertilizer service
-   * @param fertilizerRepository the fertilizer repository
+   * @param fertilizerService the fertilizer service
    */
   @Autowired
-  public FertilizerController(FertilizerService fertilizerService, FertilizerRepository fertilizerRepository) {
+  public FertilizerController(FertilizerService fertilizerService) {
     this.fertilizerService = fertilizerService;
-  }
-
-  /**
-   * Create fertilizer fertilizer dto.
-   *
-   * @param fertilizer the fertilizer
-   * @return the fertilizer dto
-   */
-  @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  public FertilizerDto createFertilizer(@RequestBody FertilizerCreationDto fertilizer) {
-    return FertilizerDto.fromEntity(fertilizerService.createFertilizer(fertilizer.toEntity()));
   }
 
   /**
@@ -57,6 +42,18 @@ public class FertilizerController {
     return allFertilizers.stream()
             .map(FertilizerDto::fromEntity)
             .toList();
+  }
+
+  /**
+   * Create fertilizer fertilizer dto.
+   *
+   * @param fertilizer the fertilizer
+   * @return the fertilizer dto
+   */
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public FertilizerDto createFertilizer(@RequestBody FertilizerCreationDto fertilizer) {
+    return FertilizerDto.fromEntity(fertilizerService.createFertilizer(fertilizer.toEntity()));
   }
 
   /**
@@ -83,15 +80,13 @@ public class FertilizerController {
   public FertilizerDto updatedFertilizer(
           @PathVariable Long id,
           @RequestBody FertilizerCreationDto fertilizer
-  ) throws FertilizerNotFoundException {
+  ) throws FertilizerNotFoundException, AccessDeniedException {
     Fertilizer fertilizerExisting = fertilizerService.findByFertilizerId(id);
-
     fertilizerExisting.setName(fertilizer.name());
     fertilizerExisting.setBrand(fertilizer.brand());
     fertilizerExisting.setComposition(fertilizer.composition());
 
     Fertilizer updatedFertilizer = fertilizerService.updateFertilizer(fertilizerExisting);
-
     return FertilizerDto.fromEntity(updatedFertilizer);
   }
 
@@ -102,10 +97,9 @@ public class FertilizerController {
    * @return the string
    * @throws FertilizerNotFoundException the fertilizer not found exception
    */
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/{id}")// Somente ADMIN pode excluir fertilizantes
   public String deleteFertilizer(@PathVariable Long id) throws FertilizerNotFoundException {
     fertilizerService.deleteFertilizer(id);
     return MessageUtil.FERTILIZER_DELETED;
   }
-
 }

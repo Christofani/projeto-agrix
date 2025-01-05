@@ -13,6 +13,7 @@ import java.util.*;
 @Repository
 public interface CropRepository extends JpaRepository<Crop, Long> {
 
+  List<Crop> findByFarmIdPerson(Person person);
 
   /**
    * Find all by harvest date between list.

@@ -43,4 +43,16 @@ public class GlobalControllerAdvice {
   public ResponseEntity<String> handleJWTVerificationException(JWTVerificationException exception) {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido.");
   }
+
+  /**
+   * Handle access denied exception response entity.
+   *
+   * @param exception the exception
+   * @return the response entity
+   */
+  @ExceptionHandler(AccessDeniedException.class)
+  public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException exception) {
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
+  }
+
 }

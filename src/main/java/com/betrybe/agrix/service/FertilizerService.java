@@ -1,17 +1,17 @@
 package com.betrybe.agrix.service;
 
-
 import com.betrybe.agrix.entity.*;
 import com.betrybe.agrix.exception.*;
 import com.betrybe.agrix.repository.*;
-import com.betrybe.agrix.utils.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.security.core.authority.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.*;
 
 import java.util.*;
 
 /**
- * The type Fertilizer service.
+ * The FertilizerService class provides methods to handle the fertilizer management.
  */
 @Service
 public class FertilizerService {
@@ -19,11 +19,6 @@ public class FertilizerService {
   private final FertilizerRepository fertilizerRepository;
   private final CropRepository cropRepository;
 
-  /**
-   * Instantiates a new Fertilizer service.
-   *
-   * @param fertilizerRepository the fertilizer repository
-   */
   @Autowired
   public FertilizerService(FertilizerRepository fertilizerRepository, CropRepository cropRepository) {
     this.fertilizerRepository = fertilizerRepository;
@@ -31,72 +26,116 @@ public class FertilizerService {
   }
 
   /**
-   * Create fertilizer fertilizer.
-   *
-   * @param fertilizer the fertilizer
-   * @return the fertilizer
-   */
-  public Fertilizer createFertilizer(Fertilizer fertilizer) {
-    return fertilizerRepository.save(fertilizer);
-  }
-
-
-  /**
-   * Find all fertilizers list.
-   *
-   * @return the list
+   * List all fertilizers for the authenticated user.
    */
   public List<Fertilizer> findAllFertilizers() {
-    return fertilizerRepository.findAll();
+
+      return fertilizerRepository.findAll();
+
   }
 
   /**
-   * Find by fertilizer id fertilizer.
-   *
-   * @param id the id
-   * @return the fertilizer
-   * @throws FertilizerNotFoundException the fertilizer not found exception
+   * Create a fertilizer.
    */
-  public Fertilizer findByFertilizerId(Long id) throws FertilizerNotFoundException {
-    return fertilizerRepository.findById(id)
-            .orElseThrow(FertilizerNotFoundException::new);
+  public Fertilizer createFertilizer(Fertilizer fertilizer) {
+    if (hasRole("ADMIN")) {
+      return fertilizerRepository.save(fertilizer);
+    } else if (hasRole("MANAGER") || hasRole("USER")) {
+      throw new AccessDeniedException("Somente ADMIN pode criar fertilizantes.");
+    }
+    throw new AccessDeniedException("Você não tem permissão para criar fertilizantes.");
   }
 
   /**
-   * Update fertilizer fertilizer.
-   *
-   * @param fertilizer the fertilizer
-   * @return the fertilizer
+   * Find a fertilizer by ID and validate ownership.
    */
-  public Fertilizer updateFertilizer(Fertilizer fertilizer) {
-    Fertilizer fertilizerExisting = fertilizerRepository.findById(fertilizer.getId())
+  public Fertilizer findByFertilizerId(Long id) throws FertilizerNotFoundException, AccessDeniedException {
+    Fertilizer fertilizer = fertilizerRepository.findById(id)
             .orElseThrow(FertilizerNotFoundException::new);
 
-    fertilizerExisting.setName(fertilizer.getName());
-    fertilizerExisting.setBrand(fertilizer.getBrand());
-    fertilizerExisting.setComposition(fertilizer.getComposition());
-
-    return fertilizerRepository.save(fertilizerExisting);
+    if (hasRole("ADMIN") || hasRole("MANAGER")) {
+      return fertilizer;
+    } else if (hasRole("USER")) {
+      validateFertilizerOwnership(fertilizer);
+      return fertilizer;
+    }
+    throw new AccessDeniedException("Você não tem permissão para acessar este fertilizante.");
   }
 
   /**
-   * Delete fertilizer string.
-   *
-   * @param id the id
-   * @return the string
-   * @throws FertilizerNotFoundException the fertilizer not found exception
+   * Update a fertilizer.
    */
-  public String deleteFertilizer(Long id) throws FertilizerNotFoundException {
-    Fertilizer fertilizerExisting = fertilizerRepository.findById(id)
+  public Fertilizer updateFertilizer(Fertilizer fertilizer) throws FertilizerNotFoundException, AccessDeniedException {
+    Fertilizer existingFertilizer = fertilizerRepository.findById(fertilizer.getId())
             .orElseThrow(FertilizerNotFoundException::new);
-    fertilizerRepository.delete(fertilizerExisting);
-    return MessageUtil.FERTILIZER_DELETED;
+
+    if (!hasRole("ADMIN")) {
+      throw new AccessDeniedException("Você não tem permissão para editar fertilizantes, peça ao ADMIN!");
+    }
+
+    existingFertilizer.setName(fertilizer.getName());
+    existingFertilizer.setBrand(fertilizer.getBrand());
+    existingFertilizer.setComposition(fertilizer.getComposition());
+
+    return fertilizerRepository.save(existingFertilizer);
   }
 
-  public void associateCropWithFertilizer(Crop crop, Fertilizer fertilizer)
-          throws FertilizerNotFoundException {
+  /**
+   * Delete a fertilizer.
+   */
+  public void deleteFertilizer(Long id) throws FertilizerNotFoundException, AccessDeniedException {
+    if (!hasRole("ADMIN")) {
+      throw new AccessDeniedException("Somente ADMIN pode excluir fertilizantes.");
+    }
+
+    Fertilizer existingFertilizer = findByFertilizerId(id);
+    fertilizerRepository.delete(existingFertilizer);
+  }
+
+  /**
+   * Associate a fertilizer with a crop.
+   */
+  public void associateCropWithFertilizer(Crop crop, Fertilizer fertilizer) throws FertilizerNotFoundException, AccessDeniedException {
+    // Verificar permissões
+    if (!hasRole("ADMIN") && !hasRole("MANAGER")) {
+      throw new AccessDeniedException("Somente ADMIN ou MANAGER pode associar fertilizantes.");
+    }
+
+    if (fertilizer == null || !fertilizerRepository.existsById(fertilizer.getId())) {
+      throw new FertilizerNotFoundException();
+    }
+
+    if (crop == null || !cropRepository.existsById(crop.getId())) {
+      throw new CropNotFoundException();
+    }
+
     crop.getFertilizers().add(fertilizer);
-
     cropRepository.save(crop);
   }
+
+  /**
+   * Utility method to get the current authenticated user.
+   */
+  private Person getCurrentUser() {
+    return (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+  }
+
+  private boolean hasRole(String role) {
+    return SecurityContextHolder.getContext().getAuthentication()
+            .getAuthorities().contains(new SimpleGrantedAuthority(role));
+  }
+
+  /**
+   * Utility method to validate if the current user owns the given fertilizer through their crops.
+   */
+  private void validateFertilizerOwnership(Fertilizer fertilizer) throws AccessDeniedException {
+    Person currentUser = getCurrentUser();
+    boolean ownsFertilizer = fertilizer.getCrops().stream()
+            .anyMatch(crop -> crop.getFarmId().getPerson().getId().equals(currentUser.getId()));
+
+    if (!ownsFertilizer) {
+      throw new AccessDeniedException("Você não tem permissão para acessar este fertilizante.");
+    }
+  }
 }
+

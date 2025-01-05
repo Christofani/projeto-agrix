@@ -4,7 +4,6 @@ package com.betrybe.agrix.service;
 import com.betrybe.agrix.entity.*;
 import com.betrybe.agrix.exception.*;
 import com.betrybe.agrix.repository.*;
-import com.betrybe.agrix.utils.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.bcrypt.*;
@@ -76,7 +75,14 @@ public class PersonService implements UserDetailsService {
             .orElseThrow(PersonNotFoundException::new);
 
     personExisting.setUsername(person.getUsername());
-    personExisting.setPassword(person.getPassword());
+
+
+    if (person.getPassword() != null && !person.getPassword().isEmpty()) {
+      String hashPassword = new BCryptPasswordEncoder().encode(person.getPassword());
+      personExisting.setPassword(hashPassword);
+    }
+
+
     personExisting.setRole(person.getRole());
     return personRepository.save(personExisting);
  }
@@ -85,15 +91,13 @@ public class PersonService implements UserDetailsService {
    * Delete person string.
    *
    * @param personId the person id
-   * @return the string
    * @throws PersonNotFoundException the person not found exception
    */
-  public String deletePerson(Long personId) throws PersonNotFoundException {
+  public void deletePerson(Long personId) throws PersonNotFoundException {
     Person person = personRepository.findById(personId)
             .orElseThrow(PersonNotFoundException::new);
     personRepository.delete(person);
-    return MessageUtil.PERSON_DELETED;
- }
+  }
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

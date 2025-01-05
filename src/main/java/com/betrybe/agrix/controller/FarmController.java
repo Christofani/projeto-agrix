@@ -7,6 +7,7 @@ import com.betrybe.agrix.service.*;
 import com.betrybe.agrix.utils.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
+import org.springframework.security.access.annotation.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -16,6 +17,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/farms")
+@Secured({"USER","MANAGER","ADMIN"})
 public class FarmController {
 
   private final FarmService farmService;
