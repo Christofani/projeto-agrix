@@ -23,6 +23,10 @@ public class Farm {
   @OneToMany(mappedBy = "farmId", cascade = CascadeType.ALL)
   private List<Crop> crops = new ArrayList<>();
 
+  @ManyToOne
+  @JoinColumn(name = "person_id", nullable = false)
+  private Person person;
+
   /**
    * Instantiates a new Farm.
    */
@@ -109,5 +113,13 @@ public class Farm {
    */
   public void setCrops(List<Crop> crops) {
     this.crops = crops;
+  }
+
+  public Person getPerson() {
+    return person;
+  }
+
+  public void setPerson(Person person) {
+    this.person = person;
   }
 }

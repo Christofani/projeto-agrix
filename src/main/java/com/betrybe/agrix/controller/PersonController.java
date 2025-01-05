@@ -14,6 +14,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/persons")
+@Secured({"USER","MANAGER","ADMIN"})
 public class PersonController {
 
   PersonService personService;
@@ -32,7 +33,6 @@ public class PersonController {
   }
 
   @GetMapping
-  @Secured({"USER","MANAGER","ADMIN"})
   public List<PersonDto> findAllPersons() {
     List<Person> allPersons = personService.findAllPersons();
     return allPersons.stream().map(PersonDto::fromEntity).toList();

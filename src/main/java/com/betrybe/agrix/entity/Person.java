@@ -2,11 +2,7 @@ package com.betrybe.agrix.entity;
 
 
 import com.betrybe.agrix.security.Role;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.springframework.security.core.*;
 import org.springframework.security.core.authority.*;
 import org.springframework.security.core.userdetails.*;
@@ -30,19 +26,45 @@ public class Person implements UserDetails {
 
   private Role role;
 
+  @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Farm> farms = new ArrayList<>();
+
+  @ManyToMany(mappedBy = "persons")
+  private List<Fertilizer> fertilizers = new ArrayList<>();
+
+  /**
+   * Instantiates a new Person.
+   */
   public Person() {
   }
 
+  /**
+   * Instantiates a new Person.
+   *
+   * @param username the username
+   * @param password the password
+   * @param role     the role
+   */
   public Person(String username, String password, Role role) {
     this.username = username;
     this.password = password;
     this.role = role;
   }
 
+  /**
+   * Gets id.
+   *
+   * @return the id
+   */
   public Long getId() {
     return id;
   }
 
+  /**
+   * Sets id.
+   *
+   * @param id the id
+   */
   public void setId(Long id) {
     this.id = id;
   }
@@ -53,6 +75,11 @@ public class Person implements UserDetails {
     return username;
   }
 
+  /**
+   * Sets username.
+   *
+   * @param username the username
+   */
   public void setUsername(String username) {
     this.username = username;
   }
@@ -62,16 +89,57 @@ public class Person implements UserDetails {
     return password;
   }
 
+  /**
+   * Sets password.
+   *
+   * @param password the password
+   */
   public void setPassword(String password) {
     this.password = password;
   }
 
+  /**
+   * Gets role.
+   *
+   * @return the role
+   */
   public Role getRole() {
     return role;
   }
 
+  /**
+   * Sets role.
+   *
+   * @param role the role
+   */
   public void setRole(Role role) {
     this.role = role;
+  }
+
+  /**
+   * Gets farms.
+   *
+   * @return the farms
+   */
+  public List<Farm> getFarms() {
+    return farms;
+  }
+
+  /**
+   * Sets farms.
+   *
+   * @param farms the farms
+   */
+  public void setFarms(List<Farm> farms) {
+    this.farms = farms;
+  }
+
+  public List<Fertilizer> getFertilizers() {
+    return fertilizers;
+  }
+
+  public void setFertilizers(List<Fertilizer> fertilizers) {
+    this.fertilizers = fertilizers;
   }
 
   @Override

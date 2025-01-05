@@ -21,7 +21,7 @@ import java.util.stream.*;
  */
 @RestController
 @RequestMapping("/crops")
-@Secured({"MANAGER","ADMIN"})
+@Secured({"USER","MANAGER","ADMIN"})
 public class CropController {
 
   private final CropService cropService;
@@ -46,7 +46,7 @@ public class CropController {
    */
   @GetMapping
   public List<CropDto> findAllCrops() {
-    List<Crop> allCrops = cropService.findAllCrops();
+    List<Crop> allCrops = cropService.findAllCropsForCurrentUser();
     return allCrops.stream()
             .map(CropDto::fromEntity)
             .collect(Collectors.toList());
@@ -152,10 +152,8 @@ public class CropController {
 
     List<Fertilizer> fertilizers = crop.getFertilizers();
 
-    List<FertilizerDto> allFertilizers = fertilizers.stream()
+    return fertilizers.stream()
             .map(FertilizerDto::fromEntity)
             .collect(Collectors.toList());
-
-    return allFertilizers;
   }
 }

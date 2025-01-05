@@ -1,91 +1,126 @@
 package com.betrybe.agrix.service;
 
-import com.betrybe.agrix.entity.*;
+import com.betrybe.agrix.entity.Farm;
+import com.betrybe.agrix.entity.Person;
+import com.betrybe.agrix.exception.AccessDeniedException;
 import com.betrybe.agrix.exception.FarmNotFoundException;
-import com.betrybe.agrix.repository.*;
-import com.betrybe.agrix.utils.*;
+import com.betrybe.agrix.repository.FarmRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.*;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
 
 /**
- * The type Farm service.
+ * The FarmService class provides methods to handle the farm management.
  */
 @Service
 public class FarmService {
 
   private final FarmRepository farmRepository;
 
-  /**
-   * Instantiates a new Farm service.
-   *
-   * @param farmRepository the farm repository
-   */
   @Autowired
   public FarmService(FarmRepository farmRepository) {
     this.farmRepository = farmRepository;
   }
 
   /**
-   * Create farm farm.
-   *
-   * @param farm the farm
-   * @return the farm
+   * List all farms for the authenticated user.
+   */
+  public List<Farm> findAllFarms() {
+    if (hasRole("ADMIN") || hasRole("MANAGER")) {
+      return farmRepository.findAll();
+    } else if (hasRole("USER")) {
+      Person currentUser = getCurrentUser();
+      return farmRepository.findByPerson(currentUser);
+    }
+    throw new AccessDeniedException("Você não tem permissão para acessar fazendas.");
+  }
+
+  /**
+   * Create a farm.
    */
   public Farm createFarm(Farm farm) {
+    Person currentUser = getCurrentUser();
+
+    if (hasRole("USER")) {
+      farm.setPerson(currentUser);
+    } else if (hasRole("ADMIN") || hasRole("MANAGER")) {
+      if (farm.getPerson() == null) {
+        throw new IllegalArgumentException("Admin ou Manager devem especificar um proprietário para a fazenda.");
+      }
+    } else {
+      throw new AccessDeniedException("Você não tem permissão para criar fazendas.");
+    }
+
     return farmRepository.save(farm);
   }
 
   /**
-   * Find all farms list.
-   *
-   * @return the list
+   * Find a farm by ID and validate ownership.
    */
-  public List<Farm> findAllFarms() {
-    return farmRepository.findAll();
-  }
-
-  /**
-   * Find by farm id farm.
-   *
-   * @param id the id
-   * @return the farm
-   * @throws FarmNotFoundException the farm not found exception
-   */
-  public Farm findByFarmId(Long id) throws FarmNotFoundException {
-    return  farmRepository.findById(id)
-            .orElseThrow(FarmNotFoundException::new);
-  }
-
-  /**
-   * Update farm farm.
-   *
-   * @param farm the farm
-   * @return the farm
-   * @throws FarmNotFoundException the farm not found exception
-   */
-  public Farm updateFarm(Farm farm) throws FarmNotFoundException {
-    Farm farmExisting = farmRepository.findById(farm.getId())
+  public Farm findByFarmId(Long id) throws FarmNotFoundException, AccessDeniedException {
+    Farm farm = farmRepository.findById(id)
             .orElseThrow(FarmNotFoundException::new);
 
-    farmExisting.setName(farm.getName());
-    farmExisting.setSize(farm.getSize());
-
-    return farmRepository.save(farmExisting);
+    if (hasRole("ADMIN") || hasRole("MANAGER")) {
+      return farm;
+    } else if (hasRole("USER")) {
+      validateFarmOwnership(farm);
+      return farm;
+    }
+    throw new AccessDeniedException("Você não tem permissão para acessar esta fazenda.");
   }
 
   /**
-   * Delete farm string.
-   *
-   * @param id the id
-   * @return the string
-   * @throws FarmNotFoundException the farm not found exception
+   * Update a farm.
    */
-  public String deleteFarm (Long id) throws FarmNotFoundException {
-      Farm farmExisting = farmRepository.findById(id)
-              .orElseThrow(FarmNotFoundException::new);
-    farmRepository.delete(farmExisting);
-    return MessageUtil.FARM_DELETED;
+  public Farm updateFarm(Farm farm) throws FarmNotFoundException, AccessDeniedException {
+    Farm existingFarm = findByFarmId(farm.getId());
+
+    if (!hasRole("ADMIN") && !hasRole("MANAGER")) {
+      validateFarmOwnership(existingFarm);
+    }
+
+    existingFarm.setName(farm.getName());
+    existingFarm.setSize(farm.getSize());
+
+    return farmRepository.save(existingFarm);
+  }
+
+  /**
+   * Delete a farm.
+   */
+  public void deleteFarm(Long id) throws FarmNotFoundException, AccessDeniedException {
+    Farm existingFarm = findByFarmId(id);
+
+    if (!hasRole("ADMIN") && !hasRole("MANAGER")) {
+      validateFarmOwnership(existingFarm);
+    }
+
+    farmRepository.delete(existingFarm);
+  }
+
+  /**
+   * Utility method to get the current authenticated user.
+   */
+  private Person getCurrentUser() {
+    return (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+  }
+
+  private boolean hasRole(String role) {
+    return SecurityContextHolder.getContext().getAuthentication()
+            .getAuthorities().contains(new SimpleGrantedAuthority(role));
+  }
+
+  /**
+   * Utility method to validate if the current user owns the given farm.
+   */
+  private void validateFarmOwnership(Farm farm) throws AccessDeniedException {
+    Person currentUser = getCurrentUser();
+    if (!farm.getPerson().getId().equals(currentUser.getId())) {
+      throw new AccessDeniedException("Você não tem permissão para acessar a fazenda com ID: " + farm.getId());
+    }
   }
 }
