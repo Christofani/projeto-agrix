@@ -32,7 +32,6 @@ public class FarmService {
     if (hasRole("ADMIN") || hasRole("MANAGER")) {
       return farmRepository.findAll();
     } else if (hasRole("USER")) {
-
       Person currentUser = getCurrentUser();
       return farmRepository.findByPerson(currentUser);
     }
@@ -45,14 +44,17 @@ public class FarmService {
   public Farm createFarm(Farm farm) {
     Person currentUser = getCurrentUser();
 
-
     if (hasRole("USER")) {
       farm.setPerson(currentUser);
-      return farmRepository.save(farm);
     } else if (hasRole("ADMIN") || hasRole("MANAGER")) {
-      return farmRepository.save(farm);
+      if (farm.getPerson() == null) {
+        throw new IllegalArgumentException("Admin ou Manager devem especificar um proprietário para a fazenda.");
+      }
+    } else {
+      throw new AccessDeniedException("Você não tem permissão para criar fazendas.");
     }
-    throw new AccessDeniedException("Você não tem permissão para criar fazendas.");
+
+    return farmRepository.save(farm);
   }
 
   /**
@@ -77,7 +79,7 @@ public class FarmService {
   public Farm updateFarm(Farm farm) throws FarmNotFoundException, AccessDeniedException {
     Farm existingFarm = findByFarmId(farm.getId());
 
-    if (!hasRole("ADMIN")) {
+    if (!hasRole("ADMIN") && !hasRole("MANAGER")) {
       validateFarmOwnership(existingFarm);
     }
 
@@ -93,7 +95,7 @@ public class FarmService {
   public void deleteFarm(Long id) throws FarmNotFoundException, AccessDeniedException {
     Farm existingFarm = findByFarmId(id);
 
-    if (!hasRole("ADMIN")) {
+    if (!hasRole("ADMIN") && !hasRole("MANAGER")) {
       validateFarmOwnership(existingFarm);
     }
 
