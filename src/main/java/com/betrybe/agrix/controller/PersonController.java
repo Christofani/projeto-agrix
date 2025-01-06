@@ -14,7 +14,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/persons")
-@Secured({"USER","MANAGER","ADMIN"})
+
 public class PersonController {
 
   PersonService personService;
