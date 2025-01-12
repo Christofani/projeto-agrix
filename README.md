@@ -70,7 +70,6 @@ O **Agrix** é um sistema de gerenciamento de fazendas e suas plantações, com 
 - **POST /auth/login**: Realiza a autenticação de um usuário e retorna um token JWT.
 
 ### **Controle de Acesso**
-
 - **GET /farms**: Restrito a usuários autenticados com as roles USER, MANAGER ou ADMIN.
 - **GET /crops**: Restrito a usuários com roles MANAGER ou ADMIN.
 - **GET /fertilizers**: Restrito a usuários com role ADMIN (retorna **403 Forbidden** caso o usuário não tenha permissão).
@@ -84,6 +83,14 @@ O projeto foi implantado e está disponível no Fly.io. Você pode acessá-lo di
 [https://projeto-agrix.fly.dev/](https://projeto-agrix.fly.dev/)
 
 Esses endpoints podem ser testados em um cliente como **Insomnia** ou **Postman** usando o link fornecido para realizar requisições aos recursos da API.
+
+---
+
+## Arquitetura do Banco de Dados
+
+Abaixo está a representação visual da arquitetura do banco de dados que sustenta o sistema Agrix.
+
+![Arquitetura do Banco de Dados](link-da-imagem-arquitetura-db.png)
 
 ---
 
