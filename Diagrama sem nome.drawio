@@ -31,7 +31,7 @@
             <mxPoint x="300" y="317.5" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="4Ya6MQj-gc4yKTbIKFqB-6" value="person" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="4Ya6MQj-gc4yKTbIKFqB-6" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;person&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="165" y="243.5" width="90" height="30" as="geometry" />
         </mxCell>
         <mxCell id="4Ya6MQj-gc4yKTbIKFqB-7" value="username VARCHAR" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
@@ -94,7 +94,7 @@
             <mxPoint x="580" y="240" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="4Ya6MQj-gc4yKTbIKFqB-23" value="farm" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="4Ya6MQj-gc4yKTbIKFqB-23" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;farm&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="445" y="166" width="90" height="30" as="geometry" />
         </mxCell>
         <mxCell id="4Ya6MQj-gc4yKTbIKFqB-24" value="name VARCHAR" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
@@ -154,7 +154,7 @@
             <mxPoint x="860" y="240" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="4Ya6MQj-gc4yKTbIKFqB-56" value="crop" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="4Ya6MQj-gc4yKTbIKFqB-56" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;crop&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="728" y="165" width="90" height="30" as="geometry" />
         </mxCell>
         <mxCell id="4Ya6MQj-gc4yKTbIKFqB-57" value="farm_id INT" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
@@ -214,7 +214,7 @@
             <mxPoint x="580" y="520" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="4Ya6MQj-gc4yKTbIKFqB-72" value="fertilizer" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="4Ya6MQj-gc4yKTbIKFqB-72" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;fertilizer&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="445" y="446" width="90" height="30" as="geometry" />
         </mxCell>
         <mxCell id="4Ya6MQj-gc4yKTbIKFqB-73" value="name VARCHAR" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
@@ -265,7 +265,7 @@
             <mxPoint x="869" y="597" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="4Ya6MQj-gc4yKTbIKFqB-88" value="crop_fertilizer" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="4Ya6MQj-gc4yKTbIKFqB-88" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;crop_fertilizer&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="737" y="523" width="90" height="30" as="geometry" />
         </mxCell>
         <mxCell id="4Ya6MQj-gc4yKTbIKFqB-89" value="crop_id INT" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
@@ -337,8 +337,8 @@
             <mxPoint x="300" y="598" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="4Ya6MQj-gc4yKTbIKFqB-136" value="crop_fertilizer" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="168" y="524" width="90" height="30" as="geometry" />
+        <mxCell id="4Ya6MQj-gc4yKTbIKFqB-136" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;person_fertilizer&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="161" y="524" width="112" height="30" as="geometry" />
         </mxCell>
         <mxCell id="4Ya6MQj-gc4yKTbIKFqB-137" value="fertilizer_id INT" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="170" y="603" width="85" height="30" as="geometry" />
