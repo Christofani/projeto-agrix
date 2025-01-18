@@ -88,11 +88,10 @@ Esses endpoints podem ser testados em um cliente como **Insomnia** ou **Postman*
 
 ## Arquitetura do Banco de Dados
 
-Abaixo está a representação visual da arquitetura do banco de dados que sustenta o sistema Agrix.
-
-![Arquitetura do Banco de Dados](link-da-imagem-arquitetura-db.png)
+  <img src="/tabela-de-relacionamento-de-entidades.png" alt="Diagrama de Relacionamento de Entidades do Banco de Dados" />
 
 ---
+
 
 ## Aprendizados e Desenvolvimento
 
